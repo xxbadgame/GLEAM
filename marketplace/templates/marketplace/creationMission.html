@@ -85,6 +85,10 @@
     </form>
 </div>
 
+<div id="finalTextArea">
+    
+</div>
+
 <script>
     $(document).ready(function() {
 
@@ -119,6 +123,8 @@
                 success: function(response) {
 
                     var $html = $(response);
+                    console.log('Response HTML:', $html);
+
 
                     var suggestions = $html.find('li').map(function(){
                         return $(this).text();
@@ -132,8 +138,18 @@
                     var h1Content = $html.filter('h1').text();
                     $('#responseArea').append('<h1>' + h1Content + '</h1>');
 
-                    var pContent = $html.filter('p').text();
+                    var pContent = $html.filter('p').not('#finalText').map(function(){
+                        return $(this).text();
+                    }).get().join('<br>');
                     $('#responseArea').append('<p>Chatbot : ' + pContent + '<br></p>');
+                    
+                    var finalTextElement = $html.find('#finalText');
+                    if (finalTextElement.length) {
+                        var finalText = finalTextElement.text();
+                        $('#finalTextArea').append('<p>' + finalText + '</p>');
+                    } else {
+                        console.log('finalText element not found.');
+                    }
 
                 },
                 error: function(xhr, errmsg, err) {

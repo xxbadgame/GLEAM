@@ -6,6 +6,7 @@ from django.urls import reverse
 from openai import OpenAI
 from django.http import JsonResponse
 from .AssistantAI.Assistant import *
+import os
 
 def index(request):
     return render(request, 'marketplace/index.html')
@@ -68,8 +69,7 @@ def BotCreationProjet(request):
     
     thread_id = request.session.get('thread_id', None)
     
-    ASSISTANT_ID = ""
-    
+    ASSISTANT_ID = os.environ.get('OPENAI_ASS_KEY')
     
     if request.method == "POST":
         message = request.POST.get('message')
