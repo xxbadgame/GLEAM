@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+    <html lang='fr'>
+        <head>
+            <meta charset='UTF-8'>
+            <title>GLEAM</title>
+            <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js'></script>
+        </head>
+        <body>
+
+            <a href="{% url 'index' %}">
+                <h1>GLEAM</h1> 
+            </a>
+
+            {% if user.is_authenticated %}
+                <nav>
+                    <ul>
+
+                        <li><a href="{% url 'index' %}">Accueil</a></li>
+
+                        <!-- Mission coté Freelance -->
+                        {% if user.role != 'entreprise' %}
+                        <li><a href="{% url 'waitlist' %}">Waitlist ({{ user.waitlist.applies.count }})</a></li>
+                        <li>Missions</li>
+                        <ul>
+                            <li><a href="{% url 'missions_freelance' %}">Mes mission en cours</a></li>
+                            <li><a href="{% url 'missions' %}">Missions Disponibles</a></li>
+                        </ul>
+                        {% endif %}
+                        
+                        <!-- Mission coté entreprise -->
+                        {% if user.role == 'entreprise' %}
+                        <li>Missions</li>
+                        <ul>
+                            <li><a href="{% url 'missions_company' %}">Mes Mission en cours</a></li>
+                            <li><a href="{% url 'creation_mission' %}">Créer une mission</a></li>
+                        </ul>
+                        {% endif %}
+
+                        <!-- Autre -->
+                        <li><a href="{% url 'profile' %}">Profil</a></li>
+                        {{ user.username }}
+                        <li><a href="{% url 'logout' %}">Se déconnecter</a></li>
+                    </ul>
+                </nav>
+            {% else %}
+                <nav>
+                    <ul>
+                        <li><a href="{% url 'index' %}">Accueil</a></li>
+                        <li><a href="{% url 'signup' %}">S'inscrire</a></li>
+                        <li><a href="{% url 'login' %}">Se connecter</a></li>
+                    </ul>
+                </nav>
+            {% endif %}
+            
+                
+
+            
+            
+            {% block content %}
+
+            {% endblock %}
+        </body>
+    </html>
+
+

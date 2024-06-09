@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>{{ mission_detail.title }}</h2>
+    <p>{{ mission_detail.description }}</p>
+    <p>{{ mission_detail.budget }}</p>
+    <p>{{ mission_detail.company_id }}</p>
+
+    {% if user.is_authenticated and user.role != 'entreprise' %}
+
+        <a href="{% url 'apply' mission_detail.slug %}">rejoindre la waitlist</a>
+
+    {% endif %}
+
+{% endblock %}

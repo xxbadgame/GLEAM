@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Création de mission</h1>
+<p> en tant que {{ user.username }}</p>
+
+<!--  ChatBot  -->
+<style>
+
+    #chatBot{
+        width: 1080px;
+    }
+
+    #chatOutput {
+        border: 1px solid black;
+        height: 40vh;
+        width: 1080px;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    #chatInput{
+
+    }
+
+    #suggest {
+        display: flex;
+        flex-direction : column;
+        align-items: center;
+    }
+
+    #suggest button {
+        width: 100%;
+        height: 50px;
+        background-color: #f1f1f1;
+        border: 1px solid black;
+        border-radius: 5px;
+    }
+
+    .boxSug {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+    }
+
+    #chatInput {
+        width: 100%;
+        height: 50px;
+        border: 1px solid black;
+        border-radius: 5px;
+    }
+
+</style>
+
+<div id="chatBot">
+    <div id="chatOutput">
+        <div>
+            <p>Chatbot: Nous allons crée ensemble un cahier des charges !</p>
+            <div id="responseArea"></div>
+        </div>
+        
+        <div id="suggest">
+            <div class="boxSug"> 
+                <button id="suggest1"></button>
+                <button id="suggest2"></button>
+            </div>
+            <div class="boxSug"> 
+                <button id="suggest3"></button>
+                <button id="suggest4"></button>
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <form id="chatForm" method="POST">
+        {% csrf_token %}
+
+        <!-- BLOQUER LES INJECTIONS -->
+        <input type="text" id="chatInput" name="message" placeholder="Posez votre question">
+        <button type="submit">Demande</button>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function() {
+
+        $('#suggest button').on('click', function() {
+            
+            var buttonText = $(this).text();
+            var currentInput = $('#chatInput').val();
+            $('#chatInput').val(currentInput + ' ' + buttonText);
+
+    
+        });
+
+
+        $('#chatForm').on('submit', function(event) {
+            event.preventDefault(); // Empêche le rechargement de la page
+
+            $('#responseArea').append('<p>Vous: ' + $('#chatInput').val() + '</p>');
+            var message = $('#chatInput').val();
+            $('#chatInput').val('');
+
+            $.ajax(
+                
+            {
+                url: "{% url 'BotCreationProjet' %}",
+                type: "POST",
+                data: {
+                    message: message,
+                    thread_id: '{{ thread_id }}',
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                
+                success: function(response) {
+
+                    var $html = $(response);
+
+                    var suggestions = $html.find('li').map(function(){
+                        return $(this).text();
+                    }).get();
+
+                    $('#suggest1').text(suggestions[0])
+                    $('#suggest2').text(suggestions[1])
+                    $('#suggest3').text(suggestions[2])
+                    $('#suggest4').text(suggestions[3])
+
+                    var h1Content = $html.filter('h1').text();
+                    $('#responseArea').append('<h1>' + h1Content + '</h1>');
+
+                    var pContent = $html.filter('p').text();
+                    $('#responseArea').append('<p>Chatbot : ' + pContent + '<br></p>');
+
+                },
+                error: function(xhr, errmsg, err) {
+                    $('#responseArea').append('<p>Erreur: ' + errmsg + '</p>');
+                }
+            });
+        });
+    });
+</script>
+
+
+
+{% endblock %}
+
+

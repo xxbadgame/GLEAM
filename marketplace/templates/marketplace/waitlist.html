@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>Waitlist</h1>
+    <p> de {{ user.username }}</p>
+
+    {% for apply in applies %}
+        
+        <h3>{{ apply.mission.company_id }}</h3>
+        <p>{{ apply.mission.title }}</p>
+
+        <a href="{% url 'delete_apply' apply.mission.slug  %}">Supprimer la demande</a>
+
+    {% endfor %}
+
+    {% if user.waitlist.applies.count > 0 %}
+        <p><a href="{% url 'delete_waitlist' %}">Supprimer toutes les demandes</a><p>
+    {% else %}
+        <p>Vous n'avez pas de demande</p>
+    {% endif %}
+
+
+{% endblock %}

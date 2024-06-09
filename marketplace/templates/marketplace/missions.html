@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h2>Missions disponibles</h2>
+
+    {% if user.is_authenticated and user.role == 'entreprise' %}
+        <a href="{% url 'mission_company' %}"><p>ajouter une mission</p></a>
+    {% endif %}
+
+    {% for mission in missions%}
+        <a href="{% url 'mission_detail' mission.slug %}">
+            <h3>{{ mission.title }}</h3>
+        </a>
+
+    {% endfor %}
+
+{% endblock %}
