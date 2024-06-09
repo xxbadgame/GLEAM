@@ -1,7 +1,7 @@
 from openai import OpenAI
 import time
 
-client = OpenAI(api_key="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")
+client = OpenAI(api_key="")
 
 
 def create_assistant():
