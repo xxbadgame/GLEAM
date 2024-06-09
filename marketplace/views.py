@@ -68,7 +68,7 @@ def BotCreationProjet(request):
     
     thread_id = request.session.get('thread_id', None)
     
-    ASSISTANT_ID = "asst_P8AtzVIcXu67uvKgxPTAhvzF"
+    ASSISTANT_ID = ""
     
     
     if request.method == "POST":
