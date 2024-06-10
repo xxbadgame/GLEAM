@@ -29,6 +29,7 @@ def creation_mission(request):
     thread = create_thread()
     request.session['thread_id'] = thread.id
     return render(request, 'marketplace/creationMission.html')
+
 def waitlist(request):
     user = request.user
     waitlist, _ = Waitlist.objects.get_or_create(user=user)
@@ -79,35 +80,17 @@ def BotCreationProjet(request):
         
         responseHTML = run_assistant(assistant=assistant, thread_id=thread_id)
         print(responseHTML)
-        print(thread_id)
         return HttpResponse(responseHTML)
     
     return render(request, 'marketplace/creationMission.html')
 
 
-# Coontexte globale
-# Qu'elle est l'objectif
-# Qui est l'auteur
-# Qui est la cible
-# Principaux domaines et processus
-# KPI
-# attentes spécifiques
-# durée prévue
-# format de rendu
-# principaux enjeux
-
-"""
-<question 1>
-
-<p>Compréhension à 20% : Vous avez dit que vous voulez créer un site Web. Pour préciser votre demande, pouvez-vous nous dire quel est le but principal de ce site Web pour votre entreprise ?</p>
-
-<ul>
- <p>Suggestions de réponse prédéfinies :</p>
-  <li>Pour fournir des informations sur votre entreprise et ses produits/services.</li>
-  <li>Pour vendre des produits ou des services en ligne.</li>
-  <li>Pour fournir des services en ligne à vos clients (par exemple, des formulaires de demande, des réservations, etc.).</li>
-  <li>Autres. Veuillez préciser.</li>
-</ul>
-**</question 1>***
-
-"""
+def save_final_text(request):
+    if request.method == "POST":
+        titre = request.POST.get('titre')
+        slug = titre.lower()
+        description = request.POST.get('description')
+        print(titre)
+        print(description)
+        
+    return HttpResponse("Mission Envoyé")

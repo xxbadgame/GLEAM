@@ -22,6 +22,7 @@ urlpatterns = [
     path('missions', missions, name='missions'),
     path('creation_mission/', creation_mission, name='creation_mission'),
     path('BotCreationProjet/', BotCreationProjet, name='BotCreationProjet'),
+    path('save_final_text/', save_final_text, name='save_final_text'),
     path('mission_detail/<str:slug>/apply', apply, name='apply'),
     path('mission_detail/<str:slug>/delete_apply', delete_apply, name='delete_apply'),
     path('waitlist/', waitlist, name='waitlist'),

@@ -58,7 +58,7 @@
 <div id="chatBot">
     <div id="chatOutput">
         <div>
-            <p>Chatbot: Nous allons crée ensemble un cahier des charges !</p>
+            <p>Nous allons crée ensemble votre mission !</p>
             <div id="responseArea"></div>
         </div>
         
@@ -85,9 +85,13 @@
     </form>
 </div>
 
-<div id="finalTextArea">
-    
+<div>
+    <form id="validation" method="POST" action="{% url 'save_final_text' %}">
+        {% csrf_token %}
+        
+    </form>
 </div>
+
 
 <script>
     $(document).ready(function() {
@@ -122,11 +126,17 @@
                 
                 success: function(response) {
 
-                    var $html = $(response);
-                    console.log('Response HTML:', $html);
+                    try {
+                        var $html = $(response);
+                    } catch (e) {
+                        $('#responseArea').append('<p>Parlez moi de votre projet ou de la mission à nous confier</p>');
+                        return;
+                    }
 
+                    // Ajout des suggestions
+                    var sug = $html.filter('ul#sug').children('li');
 
-                    var suggestions = $html.find('li').map(function(){
+                    var suggestions = sug.map(function(){
                         return $(this).text();
                     }).get();
 
@@ -135,26 +145,52 @@
                     $('#suggest3').text(suggestions[2])
                     $('#suggest4').text(suggestions[3])
 
-                    var h1Content = $html.filter('h1').text();
-                    $('#responseArea').append('<h1>' + h1Content + '</h1>');
 
-                    var pContent = $html.filter('p').not('#finalText').map(function(){
-                        return $(this).text();
-                    }).get().join('<br>');
-                    $('#responseArea').append('<p>Chatbot : ' + pContent + '<br></p>');
+                    // Titre : c'est la question
+                    var h1Content = $html.filter('h1#Titre').text();
+                    $('#responseArea').append('<h1>' + h1Content + '</h1>');
                     
-                    var finalTextElement = $html.find('#finalText');
+
+                    // Niveau de compréhension
+                    var pLevelUnderstanding = $html.filter('p#LevelUnderstanding').text();
+                    $('#responseArea').append('<p>' + pLevelUnderstanding+ '</p>');
+
+                    var exemplesText = $html.filter('ul#exemplesText').children('li')
+                    
+                    var liContent = exemplesText.map(function(){
+                        return $(this).text();
+                    }).get();
+
+                    liContent.forEach(element => {
+                        $('#responseArea').append('<li>' + element + '</li>');
+                    });
+    
+
+                    // indications pour le client
+                    var pIndication = $html.filter('p#Indication').text();
+                    $('#responseArea').append('<p>'+ pIndication +'</p>');
+                    
+                    // Sythèse final du chatbot
+                    var finalTextElement = $html.filter('p#finalText');
                     if (finalTextElement.length) {
                         var finalText = finalTextElement.text();
-                        $('#finalTextArea').append('<p>' + finalText + '</p>');
+                        $('#validation').append('<label for="titre">Titre de la mission</label>');
+                        $('#validation').append('<input type="text" name="titre" required>');
+                        $('#validation').append('<label for="description">Description</label>');
+                        $('#validation').append('<input type="text" name="description" id="finalTextInput" required>');
+                        $('#finalTextInput').val(finalText);
+                        $('#validation').append('<button type="submit">valider</button>');
                     } else {
-                        console.log('finalText element not found.');
+                        console.log('Il reste des questions.');
                     }
+
 
                 },
                 error: function(xhr, errmsg, err) {
                     $('#responseArea').append('<p>Erreur: ' + errmsg + '</p>');
                 }
+
+                
             });
         });
     });
@@ -163,5 +199,3 @@
 
 
 {% endblock %}
-
-
