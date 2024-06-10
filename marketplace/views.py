@@ -72,8 +72,7 @@ def delete_apply(request, slug):
 def BotCreationProjet(request):
     
     thread_id = request.session.get('thread_id', None)
-    
-    ASSISTANT_ID = os.environ.get('OPENAI_ASS_KEY')
+    ASSISTANT_ID = os.environ.get('OPENAI_ASS_CDC_KEY')
     
     if request.method == "POST":
         message = request.POST.get('message')
@@ -88,7 +87,13 @@ def BotCreationProjet(request):
     return render(request, 'marketplace/creationMission.html')
 
 
-def save_final_text(request):
+def creation_tasks(request):
+    thread_id = request.session.get('thread_id', None)
+    ASSISTANT_ID = os.environ.get('OPENAI_ASS_TASKS_KEY')
+    
+    
+
+def save_cdc_and_tasks(request):
     if request.method == "POST":
         titre = request.POST.get('titre')
         unique_id = str(uuid.uuid4())[:8]
@@ -98,12 +103,16 @@ def save_final_text(request):
         company_user = get_object_or_404(CustomUser, username=company_name)
         budget = request.POST.get('budget')
         deadline = request.POST.get('deadline')
+        thread_id = request.session.get('thread_id', None)
         mission = Mission(title=titre,
                           slug=slug,
                           description=description,
                           company_id=company_user, 
                           budget=budget,
-                          deadline=deadline)
+                          deadline=deadline,
+                          thread_id=thread_id
+                          )
         mission.save()
         
+
     return HttpResponse("Mission Envoyé")

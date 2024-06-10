@@ -9,6 +9,7 @@ class Mission(models.Model):
     budget = models.IntegerField()
     deadline = models.DateField()
     company_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    thread_id = models.CharField(max_length=255)
     numberApplied = models.IntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

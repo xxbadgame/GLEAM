@@ -2,9 +2,6 @@
 
 {% block content %}
 
-<h1>Création de mission</h1>
-<p> en tant que {{ user.username }}</p>
-
 <!--  ChatBot  -->
 <style>
 
@@ -63,6 +60,10 @@
 
 </style>
 
+<h1>Création de mission</h1>
+<p> en tant que {{ user.username }}</p>
+<p>thread : {{ thread_id }}</p>
+
 <div id="chatBot">
     <div id="chatOutput">
         <div>
@@ -95,9 +96,10 @@
 </div>
 
 <div>
-    <form id="validation" method="POST" action="{% url 'save_final_text' %}">
+    <form id="validation" method="POST" action="{% url 'save_cdc_and_tasks' %}">
         {% csrf_token %}
         <input type="hidden" name="company_id" value="{{ user.username }}">
+        <input type="hidden" name="thread_id" value="{{ thread_id }}">
     </form>
 </div>
 
@@ -182,10 +184,13 @@
                     // Sythèse final du chatbot
                     var finalTextElement = $html.filter('p#finalText');
                     if (finalTextElement.length) {
+
                         var finalText = finalTextElement.text();
+
                         // titre de la mission
                         $('#validation').append('<label for="titre">Titre de la mission</label>');
                         $('#validation').append('<input type="text" name="titre" id="titre" required>');
+
                         // description de la mission
                         $('#validation').append('<label for="finalTextInput">Description</label>');
                         $('#validation').append("<textarea name='description' id='finalTextInput' flex='soft' required>"+ finalText +'</textarea>');
@@ -193,6 +198,7 @@
                         // budget
                         $('#validation').append('<label for="budget">Budget</label>');
                         $('#validation').append('<input type="text" name="budget" id="budget" required>');
+
                         // date de fin
                         $('#validation').append('<label for="deadline">Date de fin</label>');
                         $('#validation').append('<input type="date" name="deadline" id="deadline" required>');

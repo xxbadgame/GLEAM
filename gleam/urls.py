@@ -17,12 +17,12 @@ urlpatterns = [
     
     # Marketplace
     path('mission_detail/<str:slug>/', mission_detail, name='mission_detail'),
-    path('missions_company', missions_company , name='missions_company'),
-    path('missions_freelance', missions_freelance , name='missions_freelance'),
-    path('missions', missions, name='missions'),
+    path('missions_company/', missions_company , name='missions_company'),
+    path('missions_freelance/', missions_freelance , name='missions_freelance'),
+    path('missions/', missions, name='missions'),
     path('creation_mission/', creation_mission, name='creation_mission'),
     path('BotCreationProjet/', BotCreationProjet, name='BotCreationProjet'),
-    path('save_final_text/', save_final_text, name='save_final_text'),
+    path('save_cdc_and_tasks/', save_cdc_and_tasks, name='save_cdc_and_tasks'),
     path('mission_detail/<str:slug>/apply', apply, name='apply'),
     path('mission_detail/<str:slug>/delete_apply', delete_apply, name='delete_apply'),
     path('waitlist/', waitlist, name='waitlist'),
