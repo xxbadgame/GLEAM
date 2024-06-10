@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from marketplace.models import Mission, Waitlist, ApplyMission
+from accounts.models import CustomUser
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -7,6 +8,8 @@ from openai import OpenAI
 from django.http import JsonResponse
 from .AssistantAI.Assistant import *
 import os
+import uuid
+
 
 def index(request):
     return render(request, 'marketplace/index.html')
@@ -88,9 +91,19 @@ def BotCreationProjet(request):
 def save_final_text(request):
     if request.method == "POST":
         titre = request.POST.get('titre')
-        slug = titre.lower()
+        unique_id = str(uuid.uuid4())[:8]
+        slug = f"{titre.lower()}-{unique_id}"
         description = request.POST.get('description')
-        print(titre)
-        print(description)
+        company_name = request.POST.get('company_id')
+        company_user = get_object_or_404(CustomUser, username=company_name)
+        budget = request.POST.get('budget')
+        deadline = request.POST.get('deadline')
+        mission = Mission(title=titre,
+                          slug=slug,
+                          description=description,
+                          company_id=company_user, 
+                          budget=budget,
+                          deadline=deadline)
+        mission.save()
         
     return HttpResponse("Mission Envoyé")

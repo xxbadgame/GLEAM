@@ -53,6 +53,14 @@
         border-radius: 5px;
     }
 
+    #finalTextInput{
+        width: 300px;
+        height: 300px;
+        border: 1px solid black;
+        border-radius: 5px;
+        wrap="soft";
+    }
+
 </style>
 
 <div id="chatBot">
@@ -80,6 +88,7 @@
         {% csrf_token %}
 
         <!-- BLOQUER LES INJECTIONS -->
+         
         <input type="text" id="chatInput" name="message" placeholder="Posez votre question">
         <button type="submit">Demande</button>
     </form>
@@ -88,7 +97,7 @@
 <div>
     <form id="validation" method="POST" action="{% url 'save_final_text' %}">
         {% csrf_token %}
-        
+        <input type="hidden" name="company_id" value="{{ user.username }}">
     </form>
 </div>
 
@@ -174,11 +183,20 @@
                     var finalTextElement = $html.filter('p#finalText');
                     if (finalTextElement.length) {
                         var finalText = finalTextElement.text();
+                        // titre de la mission
                         $('#validation').append('<label for="titre">Titre de la mission</label>');
-                        $('#validation').append('<input type="text" name="titre" required>');
-                        $('#validation').append('<label for="description">Description</label>');
-                        $('#validation').append('<input type="text" name="description" id="finalTextInput" required>');
-                        $('#finalTextInput').val(finalText);
+                        $('#validation').append('<input type="text" name="titre" id="titre" required>');
+                        // description de la mission
+                        $('#validation').append('<label for="finalTextInput">Description</label>');
+                        $('#validation').append("<textarea name='description' id='finalTextInput' flex='soft' required>"+ finalText +'</textarea>');
+
+                        // budget
+                        $('#validation').append('<label for="budget">Budget</label>');
+                        $('#validation').append('<input type="text" name="budget" id="budget" required>');
+                        // date de fin
+                        $('#validation').append('<label for="deadline">Date de fin</label>');
+                        $('#validation').append('<input type="date" name="deadline" id="deadline" required>');
+
                         $('#validation').append('<button type="submit">valider</button>');
                     } else {
                         console.log('Il reste des questions.');
